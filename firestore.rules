@@ -4,28 +4,16 @@ service cloud.firestore {
     
     // Reglas para usuarios
     match /users/{userId} {
-      // Cualquiera puede leer perfiles (para leaderboard)
       allow read: if request.auth != null;
-      
-      // Solo el dueño puede escribir su propio perfil
       allow write: if request.auth != null && request.auth.uid == userId;
     }
     
     // Reglas para juegos
     match /games/{gameId} {
-      // Usuarios autenticados pueden leer juegos
       allow read: if request.auth != null;
-      
-      // Usuarios autenticados pueden crear juegos
       allow create: if request.auth != null;
-      
-      // Solo jugadores del juego pueden actualizar
-      allow update: if request.auth != null && 
-                      request.auth.uid in resource.data.players[].id;
-      
-      // Solo el creador puede eliminar
-      allow delete: if request.auth != null && 
-                      request.auth.uid == resource.data.players[0].id;
+      allow update: if request.auth != null;
+      allow delete: if request.auth != null;
     }
   }
 }
